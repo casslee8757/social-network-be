@@ -14,7 +14,12 @@ const UserSchema = new mongoose.Schema({
         unique: true
     }, 
 
-    proilePicture: {
+    password: {
+        type: String,
+        required: true
+    },
+
+    profilePicture: {
         type: String,
         default: "" // when created it's gonna be an empty image 
     },
