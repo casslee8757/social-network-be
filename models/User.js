@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+
 const UserSchema = new mongoose.Schema({
 
     username: {
@@ -14,9 +15,22 @@ const UserSchema = new mongoose.Schema({
         unique: true
     }, 
 
-    password: {
+    passwordDigest: {
         type: String,
         required: true
+    },
+
+    posts: [
+        {
+            ref: 'Post',
+            type: mongoose.Schema.Types.ObjectId,
+
+        }
+    ],
+
+    createdAt: {
+        type: Date,
+        default: Date.now //automatically default thi field to the current date
     },
 
     profilePicture: {
@@ -35,6 +49,18 @@ const UserSchema = new mongoose.Schema({
     }
 
 
-})
+}) 
+
+UserSchema.methods.savePost = async function(post){
+    this.posts.push(post._id)
+    await this.save()
+
+    post.user = this._id
+    await post.save()
+
+    return this;
+
+}
+
 
 module.exports = mongoose.model('User', UserSchema)
