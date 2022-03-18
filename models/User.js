@@ -57,7 +57,7 @@ UserSchema.methods.savePost = async function(post){
 
     post.user = this._id
     await post.save()
-
+    console.log('associated post', post, this);
     return this;
 
 }

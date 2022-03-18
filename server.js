@@ -69,22 +69,23 @@ app.use( async (req, res, next) => {
 })
 
 app.get("/timeline", async (req, res) => {
-    try {
-      await req.user.populate({
-          path: "posts",
-          populate: {
-              path: 'user',
-              select: { 'passwordDigest': 0 }
-          }
-        })  
-      res.json(req.user.posts);
+  console.log('req.user.posts', req.user.posts);
+  try {
+    await req.user.populate({
+        path: "posts",
+        populate: {
+            path: 'user',
+            select: { 'passwordDigest': 0 }
+        }
+      })  
+    res.json(req.user.posts);
 
-      console.log('user', req.user);
-    } catch (err) {
-      res.status(500).json(err);
-      console.log('500 err', err);
-    }
-  });
+    console.log('user', req.user);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log('500 err', err);
+  }
+});
 
   app.get("/profile", async (req, res) => {
       try{
@@ -101,13 +102,36 @@ app.get("/timeline", async (req, res) => {
       }
   })
 
-// app.get('/seekrits',
+  app.get("/user/details", async (req, res) => {
+    try{
 
-//     ( req, res ) => {
-//         console.log('Auth:', req.auth); // provided by checkAuth()
-//         console.log('Auth:', req.user);
-//         res.json({terribleSecrets: ['i am a fish']  })
-// })
+      await req.user
+      res.json(req.user);
+
+     console.log('req.user', req.user);
+    }catch(err){
+      res.status(500).json(err)
+      console.log('profile error', err);
+    }
+})
+
+app.post("/create/posts", async (req, res) => {
+  try{
+    const { content } = req.body
+
+    const newPost = await Post.create({content: req.body.content})
+    await req.user.savePost(newPost)
+    // const postWithUser = await newPost.populate('user');
+    // console.log('postWIthUser',postWithUser);
+    res.json( newPost )
+
+  }catch(err){
+    console.log('post err', err);
+  }
+    
+})
+
+
 
 
 

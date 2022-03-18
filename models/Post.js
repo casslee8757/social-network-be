@@ -21,7 +21,7 @@ const PostSchema = new mongoose.Schema({
 
     creatdAt: {
         type: Date,
-        defulat: Date.now //automatically default thi field to the current date
+        default: Date.now //automatically default thi field to the current date
     },
 
    
