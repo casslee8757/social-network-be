@@ -42,7 +42,16 @@ db.on('error', (err) => {
     process.exit(1)
 })
 
-
+app.post('/search', (req, res) => {
+  let userName = new RegExp("^" + req.body.query)
+  User.find({username: {$regex:userName}})
+  .select("_id username")
+  .then(user=> {
+    res.json({user})
+  }).catch(err => {
+    console.log('search ',err);
+  })
+})
 
 
 app.post('/register', usersController.createUser)
@@ -119,17 +128,40 @@ app.post("/create/posts", async (req, res) => {
   try{
     const { content } = req.body
 
-    const newPost = await Post.create({content: req.body.content})
+    const newPost = await Post.create({content: req.body.content, img: req.body.img})
     await req.user.savePost(newPost)
-    // const postWithUser = await newPost.populate('user');
+    const postWithUser = await newPost.populate('user');
     // console.log('postWIthUser',postWithUser);
-    res.json( newPost )
+    res.json( postWithUser )
 
   }catch(err){
     console.log('post err', err);
   }
     
 })
+
+app.put("/likes", async (req, res) => {
+  try{
+    
+    
+    const newLike = await Post.findById(req.body.postId)
+      if(!newLike.likes.includes(req._id)){
+        await newLike.updateOne({$push: {likes: req._id}})
+        res.status(200).json('the post has been liked')
+      }else{
+        await newLike.updateOne({ $pull: { likes: req._id } })
+        res.status(200).json("The post has been disliked")
+      }
+    console.log('newlike',newLike);
+      // res.json(newLike);
+      
+
+  }catch(err){
+    console.log('likes error', err);
+  }
+})
+
+
 
 
 

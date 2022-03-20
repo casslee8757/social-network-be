@@ -46,10 +46,15 @@ const UserSchema = new mongoose.Schema({
     followings: {
         type: Array,
         default: []
+    },
+
+    profileCover: {
+        type: String,
+        default: ""
     }
-
-
-}) 
+},
+    {timestamps: true}
+) 
 
 UserSchema.methods.savePost = async function(post){
     this.posts.push(post._id)

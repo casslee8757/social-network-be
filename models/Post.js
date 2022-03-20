@@ -23,10 +23,9 @@ const PostSchema = new mongoose.Schema({
         type: Date,
         default: Date.now //automatically default thi field to the current date
     },
-
-   
-
-})
+},
+    {timestamps: true}
+)
 
 
 

@@ -51,13 +51,16 @@ const createUsers = async() => {
             username: 'casslee',
             email: 'casslee@ga.co',
             passwordDigest: bcrypt.hashSync('chicken', 10),
-            profilePicture: 'https://www.lempertz.com/lempertz_api/images/1110-457-Henri-Matisse-Nadia-au-sourir.jpg'
+            profilePicture: 'https://www.lempertz.com/lempertz_api/images/1110-457-Henri-Matisse-Nadia-au-sourir.jpg',
+            profileCover: 'https://www.moma.org/d/assets/W1siZiIsIjIwMTUvMTAvMjAvOXBxeDR1dG9mMF9tYXRpc3NlY3V0b3V0LmpwZyJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4NjY3XiAtZ3Jhdml0eSBDZW50ZXIgLWNyb3AgMjAwMHg2NjcrMCswIl1d/matissecutout.jpg?sha=08f7376b7ca84d59'
             
         },
         {
             username: 'David Hockney',
             email: 'hockney@ga.co',
             passwordDigest: bcrypt.hashSync('chicken', 10),
+            profilePicture: 'https://i.guim.co.uk/img/media/facaca99626f25f8cf881c1c65f75ea3e518dffe/0_0_2918_3500/master/2918.jpg?width=465&quality=45&auto=format&fit=max&dpr=2&s=872219f514e6fadeb877e08f080ae011',
+            profileCover: 'https://www.theparisreview.org/blog/wp-content/uploads/2018/04/24hockney1-superjumbo.jpg'
              
         },
     ]);
