@@ -23,6 +23,14 @@ const PostSchema = new mongoose.Schema({
         type: Date,
         default: Date.now //automatically default thi field to the current date
     },
+
+    comment: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+            
+        }
+    ]
 },
     {timestamps: true}
 )

@@ -149,16 +149,33 @@ app.put("/likes", async (req, res) => {
         await newLike.updateOne({$push: {likes: req._id}})
         res.status(200).json('the post has been liked')
       }else{
-        await newLike.updateOne({ $pull: { likes: req._id } })
+        await newLike.updateOne({ $pull: { likes: req.body.userId } })
         res.status(200).json("The post has been disliked")
       }
-    console.log('newlike',newLike);
-      // res.json(newLike);
       
+  
+    console.log('newlike',newLike);
+      res.json(newLike);
+
 
   }catch(err){
     console.log('likes error', err);
   }
+})
+
+app.post("/comment", async (req, res) => {
+  try{
+    
+    await Post.findByIdAndUpdate(req.body.postId, {
+      $push: {comment: comment}
+    }, {
+      new: true
+    })
+
+  }catch(err){
+    console.log('post err', err);
+  }
+    
 })
 
 
