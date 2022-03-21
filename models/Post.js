@@ -19,17 +19,21 @@ const PostSchema = new mongoose.Schema({
 
     },
 
-    creatdAt: {
-        type: Date,
-        default: Date.now //automatically default thi field to the current date
-    },
+    
 
-    comment: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-            
-        }
+    comments: [
+        {   
+            body: String,
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now //automatically default thi field to the current date
+            },
+        },
+
     ]
 },
     {timestamps: true}

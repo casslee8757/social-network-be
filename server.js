@@ -78,33 +78,34 @@ app.use( async (req, res, next) => {
 })
 
 app.get("/timeline", async (req, res) => {
-  console.log('req.user.posts', req.user.posts);
+  // console.log('req.user.posts', req.user.posts);
   try {
     await req.user.populate({
-        path: "posts",
-        populate: {
-            path: 'user',
-            select: { 'passwordDigest': 0 }
-        }
-      })  
+      path: "posts",
+      populate: [
+        {
+          path: 'user',
+          select: { 'passwordDigest': 0 },  
+        },
+        { path: 'comments.user' }
+      ]
+    })
     res.json(req.user.posts);
 
-    console.log('user', req.user);
+    // console.log('comments', req.user.posts.map(p => p.comments));
   } catch (err) {
     res.status(500).json(err);
     console.log('500 err', err);
   }
 });
 
-  app.get("/profile", async (req, res) => {
+  app.get("/users", async (req, res) => {
+      console.log('req',req);
       try{
-        await req.user.populate({
-            path: "posts",
-            populate: {
-                path: 'user',
-                select: { 'passwordDigest': 0 }
-            }
-        })
+        const users = await User.findOne({userId: req.user._id})
+        console.log('req.body.params',req.user._id);
+        res.json(users);
+        console.log('users', users);
       }catch(err){
         res.status(500).json(err)
         console.log('profile error', err);
@@ -117,7 +118,7 @@ app.get("/timeline", async (req, res) => {
       await req.user
       res.json(req.user);
 
-     console.log('req.user', req.user);
+    //  console.log('req.user', req.user);
     }catch(err){
       res.status(500).json(err)
       console.log('profile error', err);
@@ -142,21 +143,16 @@ app.post("/create/posts", async (req, res) => {
 
 app.put("/likes", async (req, res) => {
   try{
-    
-    
     const newLike = await Post.findById(req.body.postId)
-      if(!newLike.likes.includes(req._id)){
-        await newLike.updateOne({$push: {likes: req._id}})
-        res.status(200).json('the post has been liked')
+    
+      if(!newLike.likes.includes(req.user._id)){
+       
+        await newLike.update({$push: {likes: req.user._id}})
+        return res.json(newLike)
       }else{
-        await newLike.updateOne({ $pull: { likes: req.body.userId } })
-        res.status(200).json("The post has been disliked")
+        await newLike.update({ $pull: { likes: req.user._id } })
+        return res.json(newLike)
       }
-      
-  
-    console.log('newlike',newLike);
-      res.json(newLike);
-
 
   }catch(err){
     console.log('likes error', err);
@@ -165,12 +161,22 @@ app.put("/likes", async (req, res) => {
 
 app.post("/comment", async (req, res) => {
   try{
-    
-    await Post.findByIdAndUpdate(req.body.postId, {
-      $push: {comment: comment}
+ 
+    const updatedPost = await Post.findOneAndUpdate({_id: req.body.postId}, {
+      $push: {
+          comments: {
+            body: req.body.comment,
+            user: req.user._id
+          }
+      }
     }, {
       new: true
     })
+    const postsCommentUsers = await updatedPost.populate('comments.user')
+    const lastComment = postsCommentUsers.comments.pop()
+    res.json(lastComment)
+   g('newpostupdate', newPost);  
+  
 
   }catch(err){
     console.log('post err', err);
